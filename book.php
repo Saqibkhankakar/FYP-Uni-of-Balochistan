@@ -1,0 +1,30 @@
+<?php
+require __DIR__ . '/includes/bootstrap.php';
+$doctor = one('SELECT * FROM doctors WHERE id=? AND active=1 AND archived_at IS NULL', [(int)($_GET['doctor'] ?? 0)]);
+if (!$doctor) { http_response_code(404); $errorTitle=t('Doctor unavailable'); $errorMessage=t('Choose another doctor'); require __DIR__.'/includes/error-page.php'; exit; }
+$title=t('Book your appointment'); $error=null;
+$formData=$_SERVER['REQUEST_METHOD']==='POST' ? $_POST : ($_SESSION['booking_drafts'][$doctor['id']] ?? []);
+$_SESSION['booking_keys'] ??= [];
+// Keep multiple browser tabs usable; only server-issued keys are accepted.
+$_SESSION['booking_keys'] = array_filter($_SESSION['booking_keys'], fn($time) => $time > time()-7200);
+if ($_SERVER['REQUEST_METHOD']==='POST') {
+    verify_csrf();
+    try {
+        $submission=(string)($_POST['submission_key'] ?? '');
+        if (!isset($_SESSION['booking_keys'][$submission])) throw new DomainException(t('This booking form has expired. Please refresh and try again.'));
+        $existing=one('SELECT confirmation_token FROM appointments WHERE submission_key=?', [$submission]);
+        if ($existing) redirect('appointment.php?token='.$existing['confirmation_token']);
+        rate_limit('booking', 10, 600);
+        $a=book_appointment((int)$doctor['id'], (string)($_POST['date'] ?? ''), (string)($_POST['name'] ?? ''), (string)($_POST['phone'] ?? ''), (string)($_POST['reason'] ?? ''), $submission);
+        unset($_SESSION['booking_drafts'][$doctor['id']]);
+        redirect('appointment.php?token='.$a['confirmation_token']);
+    } catch (DomainException $e) { $error=$e->getMessage(); }
+}
+$dates=upcoming_dates((int)$doctor['id']);
+$selected=(string)($formData['date'] ?? $_GET['date'] ?? '');
+if (!isset($dates[$selected]) || !$dates[$selected]['open']) { $selected=''; foreach($dates as $date=>$state) if ($state['open']) { $selected=$date; break; } }
+$submission=isset($_SESSION['booking_keys'][$formData['submission_key'] ?? '']) ? $formData['submission_key'] : bin2hex(random_bytes(32)); $_SESSION['booking_keys'][$submission]=time();
+require __DIR__ . '/includes/header.php';
+?>
+<main id="main" class="container section"><a class="back-link" href="<?= e(url('doctors.php')) ?>"><?= e(t('← All doctors')) ?></a><div class="section-heading"><div><div class="eyebrow"><?= e(t('A LITTLE CLOSER TO BETTER')) ?></div><h1><?= e(t('Book your appointment.')) ?></h1><p class="muted"><?= e(t('Choose a day, share a few details, and you’re all set.')) ?></p></div><span class="soft-tag"><?= e(t('No account needed')) ?></span></div><?php if($error): ?><div class="alert alert-danger" role="alert"><?= e($error) ?></div><?php endif; ?>
+<div class="row g-4"><aside class="col-lg-4"><div class="panel doctor-summary"><img class="summary-photo" src="<?= e(doctor_photo($doctor)) ?>" alt="<?= e($doctor['name']) ?>"><div class="eyebrow"><?= e(t($doctor['specialization'])) ?></div><h2><?= e($doctor['name']) ?></h2><p class="muted"><?= e($doctor['qualifications']) ?></p><hr><h3 class="h6"><?= e(t('A few things to know')) ?></h3><ul class="help-list"><li><?= e(t('booking.advance',['days'=>$config['booking_days']])) ?></li><li><?= e(t('Future dates can be booked anytime. Same-day bookings follow the doctor’s booking hours.')) ?></li><li><?= e(t('Your token is assigned when you confirm.')) ?></li><li><?= e(t('Consultation times are estimates.')) ?></li></ul></div></aside><div class="col-lg-8"><form id="patient-booking-form" method="post" class="panel booking-form"><?= csrf_field() ?><input type="hidden" name="submission_key" value="<?= e($submission) ?>"><fieldset><legend><span class="step-number">1</span> <?= e(t('Choose your appointment date')) ?></legend><div class="date-options"><?php foreach($dates as $date=>$state): ?><label class="date-option <?= !$state['open'] ? 'unavailable' : '' ?>"><input type="radio" name="date" value="<?= e($date) ?>" <?= $selected===$date ? 'checked' : '' ?> <?= !$state['open'] ? 'disabled' : '' ?> required><span><strong><?= e(short_date($date)) ?></strong><small><?= e($state['open'] ? t('booking.date_option',['time'=>time_label($state['schedule']['consultation_start']),'count'=>$state['remaining']]) : $state['label']) ?></small></span></label><?php endforeach; ?></div><?php if(!$dates || !$selected): ?><div class="alert alert-info mt-3"><?= e(t('There are no bookable dates right now. Please check again later or choose another doctor.')) ?></div><?php endif; ?></fieldset><hr><fieldset><legend><span class="step-number">2</span> <?= e(t('Your details')) ?></legend><div class="row g-3"><div class="col-md-6"><label class="form-label" for="name"><?= e(t('Full name')) ?> <span aria-hidden="true">*</span></label><input class="form-control" id="name" name="name" autocomplete="name" required maxlength="100" value="<?= e($formData['name'] ?? '') ?>" placeholder="<?= e(t('e.g. Ali Khan')) ?>"></div><div class="col-md-6"><label class="form-label" for="phone"><?= e(t('Pakistani mobile number')) ?> <span aria-hidden="true">*</span></label><input class="form-control" id="phone" name="phone" type="tel" autocomplete="tel" required maxlength="20" value="<?= e($formData['phone'] ?? '') ?>" placeholder="0300 1234567"><div class="form-text"><?= e(t('03XXXXXXXXX or +923XXXXXXXXX')) ?></div></div><div class="col-12"><label class="form-label" for="reason"><?= e(t('Reason for visit')) ?> <span class="muted"><?= e(t('(optional)')) ?></span></label><textarea class="form-control" id="reason" name="reason" rows="3" maxlength="500" placeholder="<?= e(t('A brief note for your doctor')) ?>"><?= e($formData['reason'] ?? '') ?></textarea></div></div></fieldset><div class="booking-bottom"><p class="small muted"><?= e(t('Your details are visible only to authorized hospital staff and anyone you share your private slip link with.')) ?></p><button class="btn btn-primary btn-lg" <?= !$selected ? 'disabled' : '' ?>><?= e(t('Confirm appointment ↗')) ?></button></div></form></div></div></main><?php require __DIR__ . '/includes/footer.php'; ?>

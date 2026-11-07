@@ -1,0 +1,74 @@
+@font-face {
+  font-family: 'Noto Naskh Arabic';
+  src: url('../fonts/NotoNaskhArabic.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+.language-bar { background: #faf8f5; border-bottom: 1px solid #e9e5e3; }
+.language-bar .container { display: flex; justify-content: flex-end; }
+.language-switcher { display: flex; align-items: center; gap: 8px; min-height: 38px; }
+.language-switcher button { border: 0; background: transparent; color: #62545a; padding: 4px 9px; font-size: 13px; border-radius: 5px; }
+.language-switcher button[lang=ur] { font-family: 'Noto Naskh Arabic', serif; font-size: 17px; line-height: 1.5; }
+.language-switcher button[aria-pressed=true] { background: #f0dfe3; color: #791f35; font-weight: 700; }
+.language-switcher span { color: #c4a9b1; }
+.doctor-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; min-width: 160px; }
+.doctor-actions small, .archive-warning { flex-basis: 100%; }
+.archive-warning { color: #885a25; background: #fff5df; padding: 9px; margin: 0; font-size: .72rem; white-space: normal; }
+.status-archived { background: #eae6ed; color: #675176; }
+html[dir=rtl] body { font-family: 'Noto Naskh Arabic', 'Segoe UI', serif; font-size: 17px; line-height: 1.85; }
+html[dir=rtl] h1, html[dir=rtl] h2, html[dir=rtl] h3, html[dir=rtl] h4 { letter-spacing: 0; line-height: 1.6; }
+html[dir=rtl] .hero h1 { line-height: 1.55; font-size: clamp(2.5rem,4.5vw,3.6rem); }
+html[dir=rtl] .eyebrow, html[dir=rtl] .brand, html[dir=rtl] .brand small, html[dir=rtl] .staff-label, html[dir=rtl] .art-kicker, html[dir=rtl] .now-serving span { letter-spacing: 0; }
+html[dir=rtl] .brand { font-size: 1.5rem; }
+html[dir=rtl] .brand small { font-size: .8rem; line-height: 1.6; }
+html[dir=rtl] .brand-mark { font-family: 'Segoe UI', sans-serif; }
+html[dir=rtl] .eyebrow { font-size: .88rem; line-height: 1.8; }
+html[dir=rtl] .nav-link, html[dir=rtl] .btn, html[dir=rtl] .text-link, html[dir=rtl] .form-label { font-size: .95rem; }
+html[dir=rtl] .form-control, html[dir=rtl] .form-select { font-size: 1rem; }
+html[dir=rtl] .form-text, html[dir=rtl] .status, html[dir=rtl] .soft-tag, html[dir=rtl] .table, html[dir=rtl] .table th, html[dir=rtl] .table a, html[dir=rtl] .table small { font-size: .85rem; letter-spacing: 0; }
+html[dir=rtl] .status, html[dir=rtl] .soft-tag, html[dir=rtl] .btn { white-space: normal; }
+html[dir=rtl] .table th { text-transform: none; }
+html[dir=rtl] .topbar, html[dir=rtl] .footer-bottom, html[dir=rtl] .staff-nav a, html[dir=rtl] .metric>span, html[dir=rtl] .metric>small { font-size: .8rem; }
+html[dir=rtl] .help-list { padding-left: 0; padding-right: 18px; font-size: .95rem; }
+html[dir=rtl] .date-option strong, html[dir=rtl] .date-option small { font-size: .83rem; }
+html[dir=rtl] .reference, html[dir=rtl] .table-token, html[dir=rtl] .slip-token>strong { direction: ltr; unicode-bidi: isolate; }
+html[dir=rtl] .slip-details dt { font-size: .9rem; }
+html[dir=rtl] .slip-details dd, html[dir=rtl] .slip-notice { font-size: 1rem; }
+html[dir=rtl] input[type=tel], html[dir=rtl] input[type=date], html[dir=rtl] input[type=time], html[dir=rtl] input[type=number], html[dir=rtl] input[name=username], html[dir=rtl] input[name=password] { direction: ltr; text-align: right; }
+html[dir=rtl] .trust-strip .container>div { padding-left: 0; padding-right: 43px; border-right: 0; border-left: 1px solid #e9e5e3; margin-right: 0; margin-left: 22px; }
+html[dir=rtl] .trust-strip .container>div:last-child { border: 0; margin: 0; }
+html[dir=rtl] .trust-strip span { left: auto; right: 0; }
+html[dir=rtl] .trust-strip strong, html[dir=rtl] .trust-strip small, html[dir=rtl] .doctor-schedule>div, html[dir=rtl] .step-card>span, html[dir=rtl] .step-card p { font-size: .9rem; }
+html[dir=rtl] .care-note { left: auto; right: -22px; text-align: right; }
+html[dir=rtl] .care-note small, html[dir=rtl] .care-note strong, html[dir=rtl] .art-caption { font-size: .8rem; }
+html[dir=rtl] .portrait-label { left: auto; right: 18px; font-size: .8rem; }
+html[dir=rtl] .step-card { padding-left: 24px; padding-right: 0; }
+html[dir=rtl] .notice { border-left: 0; border-right: 3px solid #bf94a0; }
+html[dir=rtl] .staff-label { padding-left: 18px; padding-right: 0; }
+html[dir=rtl] .check-circle { margin-left: 0; margin-right: 8px; }
+html[dir=rtl] .print-heading>div:last-child { text-align: left; }
+html[dir=rtl] .upcoming-grid strong, html[dir=rtl] .upcoming-grid small, html[dir=rtl] .upcoming-grid span { font-size: .8rem; }
+html[dir=rtl] .status-form select { padding: 8px 8px 8px 24px; font-size: .85rem; }
+html[dir=rtl] .status-form button { font-size: .8rem; }
+html[dir=rtl] .queue-card-stats span, html[dir=rtl] .queue-overview span, html[dir=rtl] .queue-overview small { font-size: .85rem; }
+@media(max-width:575px) {
+  html[dir=rtl] .care-note { right: -7px; }
+  html[dir=rtl] .hero h1 { font-size: 2.45rem; }
+  html[dir=rtl] .brand { font-size: 1.3rem; }
+  html[dir=rtl] .topbar { font-size: .7rem; }
+  html[dir=rtl] .trust-strip .container>div { border: 0; }
+  html[dir=rtl] .date-options { grid-template-columns: 1fr; }
+  html[dir=rtl] .hero-reassurance { flex-wrap: wrap; font-size: .82rem; }
+  html[dir=rtl] .staff-nav a { padding: 6px; }
+  html[dir=rtl] .staff-label { padding: 0; }
+}
+@media print {
+  html[dir=rtl] body { font-size: 12pt; line-height: 1.8; }
+  html[dir=rtl] .print-table { direction: rtl; }
+  html[dir=rtl] .print-table th { font-size: 11pt; }
+  html[dir=rtl] .print-table td { font-size: 12pt; }
+  html[dir=rtl] .print-footnote { font-size: 10pt; }
+  html[dir=rtl] .slip-details dt, html[dir=rtl] .slip-notice { font-size: 11pt; }
+  html[dir=rtl] .slip-details dd { font-size: 12pt; }
+}

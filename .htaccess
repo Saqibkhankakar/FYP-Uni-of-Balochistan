@@ -1,0 +1,8 @@
+Options -Indexes
+<FilesMatch "^(\..*|config(\.(local|example))?\.php|README\.md|TESTING\.md|UPGRADE\.md|CHATBOT\.md|.*\.sql|.*\.log|.*\.ps1|.*\.bat|.*\.zip)$">
+  Require all denied
+</FilesMatch>
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "no-referrer"
+</IfModule>

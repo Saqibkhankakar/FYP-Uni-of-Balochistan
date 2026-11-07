@@ -1,0 +1,7 @@
+/config.local.php
+/assets/uploads/*
+!/assets/uploads/.htaccess
+!/assets/uploads/.gitkeep
+/tests/.last-result.json
+*.log
+__pycache__/
